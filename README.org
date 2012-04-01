@@ -1,3 +1,8 @@
 
 * About
-bottle-autoindex is a quick drop in (3 file
+bottle-autoindex is a quick drop in (3 files including bottle.py) web directory index. Made this to replace nginxes limited autoindex. This is a quick 100 liner script that can be used to index a directory and link to the static files web directory served by nginx or any other web server. Features include sorting by name/date modified/size. 
+
+Modify settings.py to match your use case.
+
+
+
