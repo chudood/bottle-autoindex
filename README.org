@@ -4,5 +4,7 @@ bottle-autoindex is a quick drop in (3 files including bottle.py) web directory 
 
 Modify settings.py to match your use case.
 
+Combine with supervisord and nginx forwarding.
 
+Usage: python indexer.py
 

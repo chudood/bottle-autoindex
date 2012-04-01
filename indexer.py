@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from bottle import route, run,view,template
 from os.path import dirname
 import os
@@ -8,7 +9,7 @@ import glob
 from operator import attrgetter
 from settings import *
 
-
+STATIC_LOCAL = os.path.abspath(STATIC_LOCAL)
 
 FOLDER = "<tr><td width=100>%s</td><td width=100 >%s</td><td ><b><a href='%s'>%s</a></b></td></tr>"
 FILE = "<tr><td width=100>%s</td><td width=100 >%s</td><td ><a href='%s'>%s</a></td></tr>"
@@ -49,7 +50,6 @@ def get_size(start_path = '.'):
 @route(subdir+'<sort_type>/')
 @route(subdir+'<sort_type>/'+'<path:path>')
 def index(sort_type='date',path=''):
-    #TRIMMING
     
     path = path.lstrip('/')
     if not path:
@@ -126,18 +126,12 @@ def index(sort_type='date',path=''):
     html +="".join([FILE%(convert_bytes(x['size']),x['date_ctime'].strftime(DATE_FORMAT),x['href'],x['basename']) for x in files_sorted])
     html += "</table>"
     html += "<hr><p>"
-    html +="".join([FILE_PARAGRAPH%(x['href'],x['href']) for x in files_sorted])
+    if LIST_FILE_URLS:
+        html +="".join([FILE_PARAGRAPH%(x['href'],x['href']) for x in files_sorted])
     
     html+="</p></body></html>"
     
     return html
 
-#, basename = os.path.basename(joined_path), files = files_sorted, folders = folders_sorted, title = TITLE + os.path.basename(joined_path))
-
-
-@route('/hello')
-def hello():
-    return "Hello World!"
-
-
-run(host=HOST,port=PORT,debug=True)
+if __name__ == "__main__":
+    run(host=HOST,port=PORT,debug=True)
