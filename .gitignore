@@ -4,3 +4,4 @@
 #.*
 *.wpr
 *.wpu
+local_settings*

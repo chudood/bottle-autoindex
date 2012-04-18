@@ -5,9 +5,11 @@ import os
 import stat
 import datetime
 import time
-import glob
+import urllib
 from operator import attrgetter
 from settings import *
+from local_settings import *
+
 
 STATIC_LOCAL = os.path.abspath(STATIC_LOCAL)
 
@@ -45,6 +47,11 @@ def get_size(start_path = '.'):
                 total_size += os.path.getsize(fp)
     return total_size
 
+
+@route('/favicon.ico')
+def favicon():
+    return None
+
 @route(subdir)
 @route(subdir+'<sort_type>')
 @route(subdir+'<sort_type>/')
@@ -56,23 +63,24 @@ def index(sort_type='date',path=''):
         path = ''
 
     joined_path = os.path.abspath(os.path.join(STATIC_LOCAL,path))+"/"
-    
+
     if not os.path.abspath(joined_path).startswith(STATIC_LOCAL):
         return "ERROR: Incorrect path or path does not exist"
     joined_path = joined_path.rstrip('/')
     
     if not os.path.exists(joined_path):
         return "ERROR: Incorrect path or path does not exist"
-                      
+
     #ERROR CATCHING
     try:
-        list_dir = glob.glob(joined_path+"/*")
+        list_dir = [os.path.join(joined_path,f) for f in os.listdir(joined_path)]
     except OSError:
         return "OS_ERROR: Incorrect path or path does not exist"
-    
+    print list_dir
     folders =[]
     files = []
     for f in list_dir:
+
         s = os.stat(f)
         fd = {}
         fd['basename'] = os.path.basename(f)
@@ -87,8 +95,7 @@ def index(sort_type='date',path=''):
             folders.append(fd)
         else:
             href = STATIC_URL+os.path.relpath(f,STATIC_LOCAL)
-            fd['href']=	href.replace(" ","%20")
-            
+            fd['href']=	urllib.quote(href,'/:')
             fd['size'] = s.st_size
             files.append(fd)
     if sort_type == 'date':
